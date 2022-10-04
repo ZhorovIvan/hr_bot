@@ -1,0 +1,9 @@
+create table userdata (
+id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+chat_id VARCHAR(150) NOT NULL,
+bio VARCHAR(150) NOT NULL,
+emp_title VARCHAR(150) NOT NULL,
+emp_number VARCHAR(150) NOT NULL,
+emp_email VARCHAR(255) NOT NULL,
+job_interest VARCHAR(255) NOT NULL
+)

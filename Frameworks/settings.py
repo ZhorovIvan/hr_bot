@@ -1,5 +1,4 @@
 import configparser as cp
-import logging
 
 def read_config() -> cp.ConfigParser:
     '''
