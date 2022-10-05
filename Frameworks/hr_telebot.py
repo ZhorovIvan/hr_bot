@@ -39,11 +39,15 @@ class TelegramBot():
 
         @self.bot.message_handler(regexp=urlchem_btn)
         def urachem_menu(message) -> None:
+            image = open('Files/uralchem.png', 'rb')      
+            self.bot.send_photo(message.chat.id, image)
             __send_message_with_inlinekeyboard(message, uralchem_message, save_contacts_button)
 
 
         @self.bot.message_handler(regexp=project_epr_btn)
         def project_epr(message) -> None:
+            image = open('Files/board.png', 'rb')      
+            self.bot.send_photo(message.chat.id, image)
             __send_message_with_inlinekeyboard(message, project_epr_message, save_contacts_button)
 
 
@@ -224,7 +228,7 @@ class TelegramBot():
             else:
                 data_dict.update({message.chat.id : data_dict[message.chat.id] + [message.text]})
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                markup.add(return_to_menu_button) 
+                markup.add(return_to_menu_button)
                 self.bot.send_message(message.chat.id,
                                     text,
                                     allow_sending_without_reply=False,
