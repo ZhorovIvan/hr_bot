@@ -256,7 +256,7 @@ class TelegramBot():
 
 
         def __print_to_output(text) -> None:
-            with open('output.txt', 'w') as f:
+            with open('output.txt', 'a') as f:
                 f.write(text)
 
 
