@@ -144,6 +144,7 @@ class TelegramBot():
 
         @self.bot.callback_query_handler(func=lambda call: call.data in [next_step_btn, try_again_btn])
         def next_step_start(call) -> None:
+            print("start - " + str(call.message.chat.id))
             data_dict[call.message.chat.id] = []
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             markup.add(return_to_menu_button) 
@@ -203,18 +204,24 @@ class TelegramBot():
 
         @self.bot.callback_query_handler(func=lambda call: call.data == save_data_to_db_btn)
         def save_data_to_db(call) -> None:
+            if len(data_dict[call.message.chat.id]) == 5:
+                UserData.create(chat_id=str(call.message.chat.id),
+                                bio=data_dict[call.message.chat.id][0], 
+                                emp_title=data_dict[call.message.chat.id][1], 
+                                emp_number=data_dict[call.message.chat.id][2], 
+                                emp_email=data_dict[call.message.chat.id][3],
+                                job_interest=data_dict[call.message.chat.id][4])
+                print("data saved - " + str(call.message.chat.id))                
+                del data_dict[call.message.chat.id]
 
-            UserData.create(chat_id=str(call.message.chat.id),
-                            bio=data_dict[call.message.chat.id][0], 
-                            emp_title=data_dict[call.message.chat.id][1], 
-                            emp_number=data_dict[call.message.chat.id][2], 
-                            emp_email=data_dict[call.message.chat.id][3],
-                            job_interest=data_dict[call.message.chat.id][4])
-            del data_dict[call.message.chat.id]
-
-            __send_message_with_inlinekeyboard(call.message, 
-                                                data_save_successfully_message, 
-                                                try_again_button, return_to_menu_button) 
+                __send_message_with_inlinekeyboard(call.message, 
+                                                    data_save_successfully_message, 
+                                                    try_again_button, return_to_menu_button)
+            else:
+                print("error - " + str(call.message.chat.id))
+                __send_message_with_inlinekeyboard(call.message, 
+                                                    "Ошибка,  попробуйте добавить даные снова", 
+                                                    try_again_button, return_to_menu_button)
 
 
         def __get_user_input(message, text, func, s_call, pattern, cur_fun) -> None:
