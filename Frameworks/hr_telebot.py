@@ -144,7 +144,7 @@ class TelegramBot():
 
         @self.bot.callback_query_handler(func=lambda call: call.data in [next_step_btn, try_again_btn])
         def next_step_start(call) -> None:
-            print("start - " + str(call.message.chat.id))
+            __print_to_output("start - " + str(call.message.chat.id))
             data_dict[call.message.chat.id] = []
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             markup.add(return_to_menu_button) 
@@ -211,14 +211,14 @@ class TelegramBot():
                                 emp_number=data_dict[call.message.chat.id][2], 
                                 emp_email=data_dict[call.message.chat.id][3],
                                 job_interest=data_dict[call.message.chat.id][4])
-                print("data saved - " + str(call.message.chat.id))                
+                __print_to_output("data saved - " + str(call.message.chat.id))                               
                 del data_dict[call.message.chat.id]
 
                 __send_message_with_inlinekeyboard(call.message, 
                                                     data_save_successfully_message, 
                                                     try_again_button, return_to_menu_button)
             else:
-                print("error - " + str(call.message.chat.id))
+                __print_to_output("error - " + str(call.message.chat.id))
                 __send_message_with_inlinekeyboard(call.message, 
                                                     "Ошибка,  попробуйте добавить даные снова", 
                                                     try_again_button, return_to_menu_button)
@@ -244,7 +244,7 @@ class TelegramBot():
                 self.bot.register_next_step_handler(message, func, s_call)
 
 
-        def __send_message_with_inlinekeyboard(message, message_text, *buttons):
+        def __send_message_with_inlinekeyboard(message, message_text, *buttons) -> None:
             keyboard = types.InlineKeyboardMarkup()
             keyboard.add(*buttons)
                     
@@ -253,6 +253,11 @@ class TelegramBot():
                                 allow_sending_without_reply=False,
                                 reply_markup=keyboard,
                                 parse_mode='html')
+
+
+        def __print_to_output(text) -> None:
+            with open('output.txt', 'w') as f:
+                f.write(text)
 
 
         self.bot.infinity_polling()
