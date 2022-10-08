@@ -220,7 +220,7 @@ class TelegramBot():
             else:
                 __print_to_output("error - " + str(call.message.chat.id))
                 __send_message_with_inlinekeyboard(call.message, 
-                                                    "Ошибка,  попробуйте добавить даные снова", 
+                                                    "Ошибка,  попробуйте ещё раз", 
                                                     try_again_button, return_to_menu_button)
 
 
