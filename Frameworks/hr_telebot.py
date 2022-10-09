@@ -8,10 +8,11 @@ from Frameworks.init_all_variables import *
 
 class TelegramBot():
 
-    def __init__(self, config) -> None:
+    def __init__(self, config, userdata) -> None:
         threading.Thread.__init__(self)
         self.config = config
         self.bot = telebot.TeleBot(self.config['TELEGRAM']['token'])
+        self.userdata = userdata
 
 
     def run(self) -> None:
@@ -204,25 +205,28 @@ class TelegramBot():
 
         @self.bot.callback_query_handler(func=lambda call: call.data == save_data_to_db_btn)
         def save_data_to_db(call) -> None:
-            if len(data_dict[call.message.chat.id]) == 5:
-                UserData.create(chat_id=str(call.message.chat.id),
-                                bio=data_dict[call.message.chat.id][0], 
-                                emp_title=data_dict[call.message.chat.id][1], 
-                                emp_number=data_dict[call.message.chat.id][2], 
-                                emp_email=data_dict[call.message.chat.id][3],
-                                job_interest=data_dict[call.message.chat.id][4])
-                __print_to_output("data saved - " + str(call.message.chat.id))                               
-                del data_dict[call.message.chat.id]
+            try:
+                if len(data_dict[call.message.chat.id]) == 5:
+                    self.userdata.create(chat_id=str(call.message.chat.id),
+                                    bio=data_dict[call.message.chat.id][0], 
+                                    emp_title=data_dict[call.message.chat.id][1], 
+                                    emp_number=data_dict[call.message.chat.id][2], 
+                                    emp_email=data_dict[call.message.chat.id][3],
+                                    job_interest=data_dict[call.message.chat.id][4])
 
-                __send_message_with_inlinekeyboard(call.message, 
-                                                    data_save_successfully_message, 
-                                                    try_again_button, return_to_menu_button)
-            else:
+                    __print_to_output("data saved - " + str(call.message.chat.id))                               
+                    del data_dict[call.message.chat.id]
+
+                    __send_message_with_inlinekeyboard(call.message, 
+                                                        data_save_successfully_message, 
+                                                        try_again_button, return_to_menu_button)
+                else:
+                    raise
+            except:
                 __print_to_output("error - " + str(call.message.chat.id))
                 __send_message_with_inlinekeyboard(call.message, 
-                                                    "Ошибка,  попробуйте ещё раз", 
+                                                    "Ошибка, попробуйте ещё раз", 
                                                     try_again_button, return_to_menu_button)
-
 
         def __get_user_input(message, text, func, s_call, pattern, cur_fun) -> None:
             
